@@ -1,0 +1,20 @@
+{
+  "name": "lab04",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "sky <sky_bro@qq.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/sky-bro/basic-auth",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "crypto-js": "^3.1.9"
+  }
+}
