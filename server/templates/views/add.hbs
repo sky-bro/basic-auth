@@ -1,0 +1,29 @@
+{{>header}}
+    <h1>Hello sky!</h1>
+    <form action="/add" method="post">
+        <input type="text" name="username" id="user" placeholder="username">
+        <input type="text" name="passcode" id="pass" placeholder="passcode">
+        <button type="submit">Add User!</button>
+    </form>
+
+    <script>
+        let f = document.querySelector('form');
+        let username_input = document.querySelector('#user');
+        let passcode_input = document.querySelector('#pass');
+        f.addEventListener('submit', (e)=>{
+            e.preventDefault();
+            {{!-- postData = {
+                username: username_input.value,
+                hash1: CryptoJS.SHA256(username_input.value+passcode_input.value).toString()
+            } --}}
+            username = username_input.value;
+            hash1 = CryptoJS.SHA256(username_input.value+passcode_input.value).toString();
+            {{!-- console.log('PostData', postData); --}}
+            fetch(`http://127.0.0.1:3001/add?usernaem=${username}&hash1=${hash1}`, {
+                method: 'POST'
+            }).then(function(response) {
+                console.log(response);
+            });
+        })
+    </script>
+{{>footer}}
