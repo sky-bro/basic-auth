@@ -2,50 +2,18 @@ const CryptoJS = require('crypto-js');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const hbs = require('hbs');
 const MongoClient = require('mongodb').MongoClient
 
 const app = express();
 
 // define paths for Express config
 const publicPath = path.join(__dirname, '../public');
-const viewPath = path.join(__dirname, '../templates/views');
-const partialsPath = path.join(__dirname, '../templates/partials');
 
 db_url = 'mongodb://localhost:27017/'
-
-// setup handlebars engine and views location
-app.set('view engine', 'hbs');
-app.set('views', viewPath);
-hbs.registerPartials(partialsPath);
 
 // setup static dir to serve
 app.use(express.static(publicPath));
 app.use(bodyParser.json());
-
-
-
-
-
-// MongoClient.connect(db_url, {useNewUrlParser: true}, async (err, db)=>{
-//     if (err){
-//         throw err
-//     }
-//     let dbo = db.db('lab04');
-//     obj = await dbo.collection("users").insertOne(user_obj, (err, doc)=>{
-//         if (err) {
-//             throw err
-//         }
-//         console.log('inserted user_obj successfully!')
-//     })
-//     db.close();
-// })
-
-app.get('/', (req, res) => {
-    res.render('index', {
-        title: 'Home'
-    });
-});
 
 app.post('/data', async (req, res) => {
     console.log("body", req.body);
@@ -91,26 +59,6 @@ app.post('/data', async (req, res) => {
         })
     }
 });
-
-app.get('/add', (req, res)=>{
-    res.render('add', {title: 'Add User'})
-})
-
-app.post('/add', async (req, res)=>{
-
-    console.log(req.params)
-    let username = req.body.username;
-    let hash1 = req.body.hash1;
-    if (username && hash1){
-        let db = await MongoClient.connect(db_url, {useNewUrlParser: true})
-        let dbo = db.db('lab04');
-        data = {username, hash1}
-        obj = await dbo.collection("users").insertOne(data)
-        db.close();
-        return res.json({status: 'success'})
-    }
-    return res.json({status: 'failed'})
-})
 
 let port = process.env.port?process.env.port:3000;
 app.listen(port, ()=>{

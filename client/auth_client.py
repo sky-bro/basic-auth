@@ -5,59 +5,12 @@ import codecs
 from Crypto.Hash import SHA256
 from Crypto.Cipher import AES
 from Crypto import Random
-# import tkinter
-import tkinter           # 导入 Tkinter 库
-
-# username = input('please input username:\n')
-# passcode = input('please input passcode:\n')
-# rand1 = input('please input rand1:\n')
-# if not rand1:
-#     rndfile = Random.new()
-#     rand1 = rndfile.read(16).hex()
-# print("rand1", rand1)
-# h1 = SHA256.new()
-# h1.update((username+passcode).encode('utf-8'))
-# hash1 = h1.digest().hex()
-
-# h2 = SHA256.new()
-# h2.update((hash1+rand1).encode('utf-8'))
-# hash2 = h2.digest().hex()
-
-# data = {"username": username, "hash2": hash2, "rand1":rand1}
-# encoded_data = json.dumps(data).encode('utf-8')
-
-# http = urllib3.PoolManager()
-# r = http.request('POST', 'http://127.0.0.1:3001/data', body=encoded_data, headers={'Content-Type': 'application/json'})
-# ret_data = json.loads(r.data)
-# print(ret_data)
+import tkinter
 
 #pkcs7
 BS = AES.block_size
 pad = lambda s: s + (BS - len(s) % BS) * chr(BS - len(s) % BS)
 unpad = lambda s : s[0:-ord(s[-1])]
-
-# if ret_data['status'] == 'success':
-#     print('----------server responds success----------')
-#     iv =  ret_data['iv']
-#     iv = codecs.decode(iv, 'hex_codec')
-    
-#     rand2_encrypted = ret_data['rand2_encrypted']
-#     rand2_encrypted = codecs.decode(rand2_encrypted, 'hex_codec')
-#     print('encrypted', rand2_encrypted.hex())
-
-#     key = h1.digest().hex()[:32]
-#     key = codecs.decode(key, 'hex_codec')
-#     print('key', key.hex())
-
-#     aes_cipher = AES.new(key, AES.MODE_CBC, iv)
-#     plain_text = aes_cipher.decrypt(rand2_encrypted)
-#     plain_text = unpad(plain_text.decode('utf-8'))
-#     print('decrypted', plain_text)
-#     fileHandle = open ( 'test.txt', 'w' )
-#     fileHandle.write(plain_text)
-# else:
-#     print('authentication failed!')
-
 
 class Auth(object):
     def __init__(self):
@@ -67,7 +20,7 @@ class Auth(object):
         # 创建主窗口,用于容纳其它组件
         self.root = tkinter.Tk()
         # 给主窗口设置标题内容
-        self.root.title("Port-Scanner")
+        self.root.title("Auth")
 
         # ip范围和端口范围，和需使用的线程数，显示结果
         self.username_prompt = tkinter.Label(self.root,compound = 'left', fg = 'red',bg = '#FF00FF',text = 'username')
@@ -86,7 +39,7 @@ class Auth(object):
         self.text_result = tkinter.Text(self.root)
 
         # 创建一个查询结果的按钮
-        self.result_button = tkinter.Button(self.root, command = self.scan, text = "LogIn")
+        self.result_button = tkinter.Button(self.root, command = self.login, text = "LogIn")
 
     # 完成布局
     def gui_arrang(self):
@@ -104,7 +57,7 @@ class Auth(object):
         self.root.columnconfigure(1, weight=3)
         self.root.rowconfigure(3, weight=1)
 
-    def scan(self):
+    def login(self):
         # self.check()
         # self.display_info.delete(0, tkinter.END);
         self.text_result.delete(0.0, tkinter.END)
@@ -129,7 +82,7 @@ class Auth(object):
         encoded_data = json.dumps(data).encode('utf-8')
 
         http = urllib3.PoolManager()
-        r = http.request('POST', 'http://127.0.0.1:3001/data', body=encoded_data, headers={'Content-Type': 'application/json'})
+        r = http.request('POST', 'http://127.0.0.1:3000/data', body=encoded_data, headers={'Content-Type': 'application/json'})
         ret_data = json.loads(r.data)
         print(ret_data)
         self.text_result.insert(tkinter.END, str(ret_data)+'\n')
@@ -154,11 +107,12 @@ class Auth(object):
             plain_text = unpad(plain_text.decode('utf-8'))
             print('decrypted', plain_text)
             self.text_result.insert(tkinter.END, 'decrypted: ' + plain_text+"\n")
-            fileHandle = open ( 'test.txt', 'w' )
-            fileHandle.write(plain_text+"\n")
+            fileHandle = open('./test.txt', 'w')
+            fileHandle.write(plain_text)
+            fileHandle.close()
         else:
             print('authentication failed!')
-            self.text_result.insert(tkinter.END, 'authentication failed!+"\n')
+            self.text_result.insert(tkinter.END, 'authentication failed!\n')
 
 
 def main():
